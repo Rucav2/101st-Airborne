@@ -41,18 +41,19 @@
                         'stencil': ['"Black Ops One"', 'cursive'],
                         'tech': ['"Rajdhani"', 'sans-serif'],
                     },
-                    backgroundImage: {
-                        'hero-pattern': "linear-gradient(to bottom, rgba(10,10,10,0.3), rgba(10,10,10,0.9)), url('https://images.unsplash.com/photo-1542256851-7665192003dd?q=80&w=1920&auto=format&fit=crop')",
-                        'camo': "url('https://www.transparenttextures.com/patterns/dark-matter.png')",
-                    },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'scanline': 'scanline 8s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
                     },
                     keyframes: {
                         scanline: {
                             '0%': { transform: 'translateY(-100%)' },
                             '100%': { transform: 'translateY(100%)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
                         }
                     }
                 }
@@ -133,23 +134,49 @@
             color: #FFD700;
             background-color: rgba(255, 215, 0, 0.1);
         }
+
+        /* NEW ANIMATION CLASSES */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal-left.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal-right.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Stagger delays for grid items */
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
     </style>
 </head>
 <body class="bg-tac-900 text-gray-300 font-tech overflow-x-hidden selection:bg-army selection:text-white">
 
-    <!-- Loading Screen -->
-    <div id="loader" class="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center font-mono text-green-500">
-        <div class="w-64">
-            <div class="mb-2 text-xs opacity-70">INITIALIZING SYSTEMS...</div>
-            <div class="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
-                <div id="loading-bar" class="h-full bg-green-500 w-0 transition-all duration-[2000ms] ease-out"></div>
-            </div>
-            <div id="loading-text" class="mt-2 text-xs text-right">0%</div>
-        </div>
-    </div>
-
     <!-- Navigation -->
-    <nav class="fixed w-full z-40 top-0 left-0 border-b border-white/10 bg-tac-900/90 backdrop-blur-md">
+    <nav class="fixed w-full z-40 top-0 left-0 border-b border-white/10 bg-tac-900/90 backdrop-blur-md transition-all duration-300" id="main-nav">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <div class="flex items-center gap-3">
@@ -192,40 +219,43 @@
     <!-- Hero Section -->
     <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden crt">
         <div class="absolute inset-0 z-0">
-            <div class="absolute inset-0 bg-hero-pattern bg-cover bg-center bg-no-repeat transform scale-105 animate-pulse-slow"></div>
+            <!-- Dark Gradient Background -->
+            <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-tac-800 to-black transform scale-105 animate-pulse-slow"></div>
             <div class="absolute inset-0 bg-black/60"></div>
             <!-- Grid Overlay -->
             <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 50px 50px;"></div>
         </div>
         
         <div class="relative z-10 text-center px-4 max-w-5xl mx-auto mt-16">
-            <div class="inline-block border border-eagle/30 bg-black/50 backdrop-blur px-4 py-1 mb-6 rounded text-eagle text-xs tracking-[0.3em] font-bold uppercase animate-fade-in-up">
-                Arma 3 Realism Unit
-            </div>
-            <h1 class="glitch-text text-6xl md:text-8xl lg:text-9xl font-stencil text-white mb-4 tracking-tight drop-shadow-2xl" data-text="101st AIRBORNE">
-                101st AIRBORNE
-            </h1>
-            <p class="text-xl md:text-2xl text-gray-300 mb-10 tracking-widest font-light max-w-3xl mx-auto uppercase border-t border-b border-white/10 py-4">
-                "Currahee" • Stands Alone • Air Assault
-            </p>
-            
-            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <a href="https://discord.gg/sMrmNqy2DS" target="_blank" class="group relative px-8 py-4 bg-army hover:bg-army-light transition-all duration-300 clip-path-polygon">
-                    <div class="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors"></div>
-                    <div class="relative flex items-center gap-3">
-                        <i class="fab fa-discord text-2xl"></i>
-                        <div class="text-left">
-                            <div class="text-xs font-bold tracking-widest opacity-70">STATUS: RECRUITING</div>
-                            <div class="text-xl font-bold font-stencil tracking-wider">ENLIST NOW</div>
+            <div class="reveal-on-scroll">
+                <div class="inline-block border border-eagle/30 bg-black/50 backdrop-blur px-4 py-1 mb-6 rounded text-eagle text-xs tracking-[0.3em] font-bold uppercase animate-float">
+                    Arma 3 Realism Unit
+                </div>
+                <h1 class="glitch-text text-6xl md:text-8xl lg:text-9xl font-stencil text-white mb-4 tracking-tight drop-shadow-2xl" data-text="101st AIRBORNE">
+                    101st AIRBORNE
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-10 tracking-widest font-light max-w-3xl mx-auto uppercase border-t border-b border-white/10 py-4">
+                    "Currahee" • Stands Alone • Air Assault
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                    <a href="https://discord.gg/sMrmNqy2DS" target="_blank" class="group relative px-8 py-4 bg-army hover:bg-army-light transition-all duration-300 clip-path-polygon hover:-translate-y-1 shadow-lg hover:shadow-green-900/50">
+                        <div class="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors"></div>
+                        <div class="relative flex items-center gap-3">
+                            <i class="fab fa-discord text-2xl animate-pulse"></i>
+                            <div class="text-left">
+                                <div class="text-xs font-bold tracking-widest opacity-70">STATUS: RECRUITING</div>
+                                <div class="text-xl font-bold font-stencil tracking-wider">ENLIST NOW</div>
+                            </div>
                         </div>
-                    </div>
-                </a>
-                <a href="#training" class="group relative px-8 py-4 border border-white/20 hover:border-eagle/50 hover:bg-white/5 transition-all duration-300">
-                    <div class="relative flex items-center gap-3">
-                        <i class="fas fa-book-medical text-eagle text-xl"></i>
-                        <span class="font-bold tracking-widest text-lg">VIEW TRAINING</span>
-                    </div>
-                </a>
+                    </a>
+                    <a href="#training" class="group relative px-8 py-4 border border-white/20 hover:border-eagle/50 hover:bg-white/5 transition-all duration-300 hover:-translate-y-1">
+                        <div class="relative flex items-center gap-3">
+                            <i class="fas fa-book-medical text-eagle text-xl group-hover:rotate-12 transition-transform"></i>
+                            <span class="font-bold tracking-widest text-lg">VIEW TRAINING</span>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -237,25 +267,25 @@
     </section>
 
     <!-- Stats / About Strip -->
-    <section id="about" class="py-10 bg-tac-800 border-y border-white/5">
+    <section id="about" class="py-10 bg-tac-800 border-y border-white/5 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/10">
-            <div class="group">
-                <i class="fas fa-helicopter text-3xl text-army-accent mb-2 group-hover:scale-110 transition-transform"></i>
+            <div class="group reveal-on-scroll delay-100">
+                <i class="fas fa-helicopter text-3xl text-army-accent mb-2 group-hover:scale-110 transition-transform duration-500"></i>
                 <h3 class="text-2xl font-bold text-white">AIR ASSAULT</h3>
                 <p class="text-xs text-gray-500 uppercase tracking-wider">Specialty</p>
             </div>
-            <div class="group">
-                <i class="fas fa-users text-3xl text-army-accent mb-2 group-hover:scale-110 transition-transform"></i>
+            <div class="group reveal-on-scroll delay-200">
+                <i class="fas fa-users text-3xl text-army-accent mb-2 group-hover:scale-110 transition-transform duration-500"></i>
                 <h3 class="text-2xl font-bold text-white">REALISM</h3>
                 <p class="text-xs text-gray-500 uppercase tracking-wider">Playstyle</p>
             </div>
-            <div class="group">
-                <i class="fas fa-globe-americas text-3xl text-army-accent mb-2 group-hover:scale-110 transition-transform"></i>
+            <div class="group reveal-on-scroll delay-300">
+                <i class="fas fa-globe-americas text-3xl text-army-accent mb-2 group-hover:scale-110 transition-transform duration-500"></i>
                 <h3 class="text-2xl font-bold text-white">EST & CST</h3>
                 <p class="text-xs text-gray-500 uppercase tracking-wider">Timezones</p>
             </div>
-            <div class="group">
-                <i class="fas fa-medal text-3xl text-army-accent mb-2 group-hover:scale-110 transition-transform"></i>
+            <div class="group reveal-on-scroll delay-400">
+                <i class="fas fa-medal text-3xl text-army-accent mb-2 group-hover:scale-110 transition-transform duration-500"></i>
                 <h3 class="text-2xl font-bold text-white">PROFESSIONAL</h3>
                 <p class="text-xs text-gray-500 uppercase tracking-wider">Structure</p>
             </div>
@@ -263,10 +293,9 @@
     </section>
 
     <!-- Training Manual Section -->
-    <section id="training" class="py-24 bg-tac-900 relative">
-        <div class="absolute inset-0 bg-camo opacity-5 pointer-events-none"></div>
+    <section id="training" class="py-24 bg-tac-900 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-16">
+            <div class="text-center mb-16 reveal-on-scroll">
                 <h2 class="text-4xl md:text-5xl font-stencil text-white mb-4">BASIC TRAINING PIPELINE</h2>
                 <div class="h-1 w-24 bg-eagle mx-auto mb-6"></div>
                 <p class="text-gray-400 max-w-2xl mx-auto">
@@ -278,18 +307,13 @@
             <!-- Training Accordion / Steps -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <!-- Step Selector (Left Side) -->
-                <div class="lg:col-span-4 space-y-4" id="training-nav">
+                <div class="lg:col-span-4 space-y-4 reveal-left" id="training-nav">
                     <!-- Buttons generated by JS -->
                 </div>
 
                 <!-- Step Content (Right Side) -->
-                <div class="lg:col-span-8">
-                    <div class="bg-tac-800 border border-white/10 p-8 rounded-lg shadow-2xl h-full relative overflow-hidden group">
-                        <!-- Decorative Header -->
-                        <div class="absolute top-0 right-0 p-4 opacity-20">
-                            <i class="fas fa-file-contract text-9xl"></i>
-                        </div>
-                        
+                <div class="lg:col-span-8 reveal-right">
+                    <div class="bg-tac-800 border border-white/10 p-8 rounded-lg shadow-2xl h-full relative overflow-hidden group hover:border-eagle/30 transition-colors duration-500">
                         <div id="training-content" class="relative z-10 transition-opacity duration-300">
                             <!-- Content injected by JS -->
                         </div>
@@ -297,8 +321,8 @@
                 </div>
             </div>
             
-            <div class="mt-8 text-center">
-                 <a href="https://docs.google.com/document/d/1cdZg2oU9SZflkwpq1tEXKcboetEAUtvFUfwO-SaYMTo/edit?tab=t.0#heading=h.3t2ay0jqfh59" target="_blank" class="inline-flex items-center text-eagle hover:text-white transition-colors text-sm uppercase tracking-widest border-b border-eagle/50 hover:border-white pb-1">
+            <div class="mt-8 text-center reveal-on-scroll">
+                 <a href="https://docs.google.com/document/d/1cdZg2oU9SZflkwpq1tEXKcboetEAUtvFUfwO-SaYMTo/edit?tab=t.0#heading=h.3t2ay0jqfh59" target="_blank" class="inline-flex items-center text-eagle hover:text-white transition-colors text-sm uppercase tracking-widest border-b border-eagle/50 hover:border-white pb-1 hover:scale-105 transform duration-300">
                     <i class="fas fa-external-link-alt mr-2"></i> View Full Manual Document
                 </a>
             </div>
@@ -306,9 +330,9 @@
     </section>
 
     <!-- MOS & Classes Section -->
-    <section id="mos" class="py-24 bg-tac-800 border-t border-white/5 relative">
+    <section id="mos" class="py-24 bg-tac-800 border-t border-white/5 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-white/10 pb-4">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-white/10 pb-4 reveal-on-scroll">
                 <div>
                     <h2 class="text-4xl md:text-5xl font-stencil text-white">THE ARSENAL</h2>
                     <p class="text-army-accent mt-2 font-mono uppercase tracking-wider">Choose Your Path</p>
@@ -316,37 +340,36 @@
                 
                 <!-- Tab Switcher -->
                 <div class="flex space-x-2 mt-6 md:mt-0 bg-tac-900 p-1 rounded-lg">
-                    <button onclick="switchTab('mos-grid')" id="btn-mos" class="px-6 py-2 text-sm font-bold uppercase rounded transition-all tab-active">
+                    <button onclick="switchTab('mos-grid')" id="btn-mos" class="px-6 py-2 text-sm font-bold uppercase rounded transition-all tab-active hover:bg-white/5">
                         MOS Codes
                     </button>
-                    <button onclick="switchTab('classes-grid')" id="btn-classes" class="px-6 py-2 text-sm font-bold uppercase rounded transition-all text-gray-500 hover:text-white">
+                    <button onclick="switchTab('classes-grid')" id="btn-classes" class="px-6 py-2 text-sm font-bold uppercase rounded transition-all text-gray-500 hover:text-white hover:bg-white/5">
                         Combat Roles
                     </button>
                 </div>
             </div>
 
             <!-- MOS GRID -->
-            <div id="mos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+            <div id="mos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Content Populated by JS -->
             </div>
 
             <!-- CLASSES GRID (Hidden by default) -->
-            <div id="classes-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+            <div id="classes-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Content Populated by JS -->
             </div>
         </div>
     </section>
 
     <!-- Footer / Join CTA -->
-    <footer class="bg-black py-20 border-t border-army-dark relative overflow-hidden">
-        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+    <footer class="bg-black py-20 border-t border-army-dark relative overflow-hidden reveal-on-scroll">
         <div class="max-w-4xl mx-auto text-center relative z-10 px-4">
             <h2 class="text-5xl md:text-7xl font-stencil text-white mb-6 uppercase">Ready to Drop?</h2>
             <p class="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
                 The 101st Airborne is looking for dedicated soldiers. No experience required—we will train you. Join the Discord to begin your enlistment.
             </p>
             
-            <a href="https://discord.gg/sMrmNqy2DS" target="_blank" class="inline-block bg-eagle hover:bg-white text-black font-black text-2xl py-6 px-12 rounded-sm skew-x-[-10deg] shadow-[0_0_30px_rgba(255,215,0,0.2)] hover:shadow-[0_0_50px_rgba(255,215,0,0.6)] transition-all transform hover:-translate-y-1">
+            <a href="https://discord.gg/sMrmNqy2DS" target="_blank" class="inline-block bg-eagle hover:bg-white text-black font-black text-2xl py-6 px-12 rounded-sm skew-x-[-10deg] shadow-[0_0_30px_rgba(255,215,0,0.2)] hover:shadow-[0_0_50px_rgba(255,215,0,0.6)] transition-all transform hover:-translate-y-2 duration-300">
                 <span class="skew-x-[10deg] inline-block flex items-center gap-4">
                     <i class="fab fa-discord"></i> JOIN THE UNIT
                 </span>
@@ -512,7 +535,6 @@
 
         function renderTraining() {
             const navContainer = document.getElementById('training-nav');
-            const contentContainer = document.getElementById('training-content');
             
             // Set initial content
             updateTrainingContent(0);
@@ -520,9 +542,9 @@
             // Generate Nav Buttons
             navContainer.innerHTML = trainingData.map((phase, index) => `
                 <button onclick="updateTrainingContent(${index})" 
-                    class="w-full text-left p-4 rounded bg-tac-800 hover:bg-tac-700 border border-white/5 hover:border-eagle/50 transition-all group focus:outline-none focus:ring-1 focus:ring-eagle flex items-center justify-between" id="phase-btn-${index}">
+                    class="w-full text-left p-4 rounded bg-tac-800 hover:bg-tac-700 border border-white/5 hover:border-eagle/50 transition-all group focus:outline-none focus:ring-1 focus:ring-eagle flex items-center justify-between hover:translate-x-2 duration-300" id="phase-btn-${index}">
                     <div class="flex items-center">
-                        <div class="h-8 w-8 rounded bg-black flex items-center justify-center mr-4 text-gray-500 group-hover:text-eagle border border-white/10">
+                        <div class="h-8 w-8 rounded bg-black flex items-center justify-center mr-4 text-gray-500 group-hover:text-eagle border border-white/10 transition-colors">
                             <i class="fas ${phase.icon}"></i>
                         </div>
                         <div>
@@ -541,6 +563,7 @@
             
             // Fade out
             contentDiv.style.opacity = '0';
+            contentDiv.style.transform = 'translateY(10px)';
             
             setTimeout(() => {
                 contentDiv.innerHTML = `
@@ -554,6 +577,7 @@
                 `;
                 // Fade in
                 contentDiv.style.opacity = '1';
+                contentDiv.style.transform = 'translateY(0)';
                 
                 // Update active button state
                 document.querySelectorAll('#training-nav button').forEach((btn, i) => {
@@ -572,30 +596,35 @@
 
         function renderMOS() {
             const container = document.getElementById('mos-grid');
-            container.innerHTML = mosData.map(mos => `
-                <div class="bg-tac-900 group hover:bg-tac-800 p-6 rounded border border-white/5 hover:border-eagle/50 transition-all duration-300 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+            container.innerHTML = mosData.map((mos, i) => `
+                <div class="bg-tac-900 group hover:bg-tac-800 p-6 rounded border border-white/5 hover:border-eagle/50 transition-all duration-300 relative overflow-hidden reveal-on-scroll delay-${(i % 3 + 1) * 100} hover:-translate-y-2 hover:shadow-2xl">
+                    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-125 duration-700">
                         <i class="fas ${mos.icon} text-6xl"></i>
                     </div>
                     <div class="text-4xl font-black text-white/10 absolute bottom-2 right-4 group-hover:text-eagle/10 transition-colors">${mos.code}</div>
                     
                     <div class="relative z-10">
                         <div class="flex items-center gap-3 mb-4">
-                            <span class="text-eagle font-mono font-bold text-lg border border-eagle/30 px-2 py-0.5 rounded">${mos.code}</span>
+                            <span class="text-eagle font-mono font-bold text-lg border border-eagle/30 px-2 py-0.5 rounded group-hover:bg-eagle group-hover:text-black transition-all">${mos.code}</span>
                         </div>
                         <h3 class="text-xl font-bold text-white mb-1">${mos.title}</h3>
                         <p class="text-xs text-gray-500 uppercase tracking-wider mb-4">${mos.role}</p>
-                        <p class="text-gray-400 text-sm leading-relaxed border-t border-white/10 pt-4">${mos.desc}</p>
+                        <p class="text-gray-400 text-sm leading-relaxed border-t border-white/10 pt-4 group-hover:border-eagle/30 transition-colors">${mos.desc}</p>
                     </div>
                 </div>
             `).join('');
+            
+            // Re-observe new elements
+            document.querySelectorAll('.reveal-on-scroll').forEach((el) => {
+                observer.observe(el);
+            });
         }
 
         function renderClasses() {
             const container = document.getElementById('classes-grid');
-            container.innerHTML = classData.map(role => `
-                <div class="bg-tac-900 p-1 rounded border border-white/5 hover:border-army-light transition-all">
-                    <div class="bg-black/40 p-5 h-full rounded flex flex-col">
+            container.innerHTML = classData.map((role, i) => `
+                <div class="bg-tac-900 p-1 rounded border border-white/5 hover:border-army-light transition-all reveal-on-scroll delay-${(i % 3 + 1) * 100} hover:-translate-y-1">
+                    <div class="bg-black/40 p-5 h-full rounded flex flex-col group hover:bg-white/5 transition-colors">
                         <div class="flex justify-between items-start mb-2">
                             <h3 class="font-bold text-white text-lg">${role.title}</h3>
                             <span class="text-[10px] bg-white/10 px-2 py-1 rounded text-gray-300 uppercase">${role.type}</span>
@@ -603,10 +632,15 @@
                         <div class="text-xs text-eagle mb-3 font-mono">
                             <i class="fas fa-gun mr-1"></i> ${role.equipment}
                         </div>
-                        <p class="text-sm text-gray-500 mt-auto">${role.desc}</p>
+                        <p class="text-sm text-gray-500 mt-auto group-hover:text-gray-300 transition-colors">${role.desc}</p>
                     </div>
                 </div>
             `).join('');
+
+            // Re-observe new elements
+            document.querySelectorAll('.reveal-on-scroll').forEach((el) => {
+                observer.observe(el);
+            });
         }
 
         function switchTab(tabId) {
@@ -615,65 +649,79 @@
             const btnMos = document.getElementById('btn-mos');
             const btnClasses = document.getElementById('btn-classes');
 
-            if (tabId === 'mos-grid') {
-                mosGrid.classList.remove('hidden');
-                classesGrid.classList.add('hidden');
-                
-                btnMos.classList.add('tab-active', 'text-eagle');
-                btnMos.classList.remove('text-gray-500');
-                
-                btnClasses.classList.remove('tab-active', 'text-eagle');
-                btnClasses.classList.add('text-gray-500');
-            } else {
-                mosGrid.classList.add('hidden');
-                classesGrid.classList.remove('hidden');
-                
-                btnClasses.classList.add('tab-active', 'text-eagle');
-                btnClasses.classList.remove('text-gray-500');
-                
-                btnMos.classList.remove('tab-active', 'text-eagle');
-                btnMos.classList.add('text-gray-500');
-            }
+            // Simple fade out/in effect
+            mosGrid.classList.add('opacity-0');
+            classesGrid.classList.add('opacity-0');
+
+            setTimeout(() => {
+                if (tabId === 'mos-grid') {
+                    mosGrid.classList.remove('hidden');
+                    classesGrid.classList.add('hidden');
+                    
+                    btnMos.classList.add('tab-active', 'text-eagle');
+                    btnMos.classList.remove('text-gray-500');
+                    
+                    btnClasses.classList.remove('tab-active', 'text-eagle');
+                    btnClasses.classList.add('text-gray-500');
+                    
+                    setTimeout(() => mosGrid.classList.remove('opacity-0'), 50);
+                } else {
+                    mosGrid.classList.add('hidden');
+                    classesGrid.classList.remove('hidden');
+                    
+                    btnClasses.classList.add('tab-active', 'text-eagle');
+                    btnClasses.classList.remove('text-gray-500');
+                    
+                    btnMos.classList.remove('tab-active', 'text-eagle');
+                    btnMos.classList.add('text-gray-500');
+                    
+                    setTimeout(() => classesGrid.classList.remove('opacity-0'), 50);
+                }
+            }, 200);
         }
+
+        // --- ANIMATION OBSERVER ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, observerOptions);
 
         // --- INIT ---
         
         window.onload = function() {
-            // Fake Loader
-            let width = 0;
-            const bar = document.getElementById('loading-bar');
-            const text = document.getElementById('loading-text');
-            const loader = document.getElementById('loader');
-            
-            bar.style.width = '100%';
-            
-            const interval = setInterval(() => {
-                width += 5;
-                if(width > 100) width = 100;
-                text.innerText = width + "%";
-                if(width === 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        loader.style.opacity = '0';
-                        setTimeout(() => loader.remove(), 500);
-                    }, 500);
-                }
-            }, 50);
-
             // Render content
             renderTraining();
             renderMOS();
             renderClasses();
+
+            // Observe all reveal elements
+            document.querySelectorAll('.reveal-on-scroll, .reveal-left, .reveal-right').forEach((el) => {
+                observer.observe(el);
+            });
+            
+            // Force first section visible immediately
+            setTimeout(() => {
+                document.querySelector('#home .reveal-on-scroll').classList.add('is-visible');
+            }, 100);
         };
 
         // Sticky Nav logic
         window.onscroll = function() {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
-                nav.classList.add('shadow-lg', 'bg-tac-900/95');
+                nav.classList.add('shadow-lg', 'bg-tac-900/95', 'py-0');
                 nav.classList.remove('bg-tac-900/0');
             } else {
-                nav.classList.remove('shadow-lg', 'bg-tac-900/95');
+                nav.classList.remove('shadow-lg', 'bg-tac-900/95', 'py-0');
             }
         };
 
